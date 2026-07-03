@@ -5,10 +5,12 @@ import dns from 'node:dns';
 
 import dotenv from 'dotenv';
 import connectDb from './config/db.js';
+import authRouter from './routes/auth.route.js';
+
 dotenv.config();
-const PORT = process.env.PORT;
 dns.setServers([process.env.DNS1, process.env.DNS2]);
 
+const PORT = process.env.PORT;
 const app = express();
 
 app.use(
@@ -20,10 +22,9 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.get('/', (req, res) => {
-  res.send('This is our Food Delivery API');
-});
+app.use('/api/auth', authRouter);
+
 app.listen(PORT, () => {
   connectDb();
-  console.log('listening on port', PORT);
+  console.log(`Server is running on port ${PORT}`);
 });
