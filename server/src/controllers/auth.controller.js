@@ -92,10 +92,21 @@ const signIn = async (req, res) => {
   }
 };
 
+const signOut = async (req, res) => {
+  try {
+    res.clearCookie('token');
+    return res.status(201).json({ message: 'User signed out successfully' });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: `SignOut failed ${error.message}`, success: false });
+  }
+};
+
 const sendOtp = async (req, res) => {};
 
 const verifyOtp = async (req, res) => {};
 
 const resetPassword = async (req, res) => {};
 
-export default { signUp, signIn, sendOtp, verifyOtp, resetPassword };
+export default { signUp, signIn, signOut, sendOtp, verifyOtp, resetPassword };
