@@ -1,4 +1,6 @@
+import bcrypt from 'bcrypt';
 import User from '../models/user.model.js';
+import generateToken from '../utils/token.js';
 
 const signUp = async (req, res) => {
   try {
@@ -30,7 +32,7 @@ const signUp = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const createdUser = await User.create({
+    user = await User.create({
       fullName,
       email,
       password: hashPassword,
@@ -38,11 +40,18 @@ const signUp = async (req, res) => {
       role,
     });
 
-    const token = generateToken(createdUser._id);
+    const token = await generateToken(user._id);
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     return res
       .status(201)
-      .json({ message: 'User created successfully', user: createdUser, token });
+      .json({ message: 'User created successfully', user: user, token });
   } catch (error) {
     return res.status(500).json({ message: error.message, success: false });
   }
