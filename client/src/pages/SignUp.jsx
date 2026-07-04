@@ -1,15 +1,16 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 import { FcGoogle } from 'react-icons/fc';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
-import { serverUrl } from '../App';
+import { StoreContext } from '../context/StoreContext';
 
 function SignUp() {
-  const primaryColor = '#ff4d2d';
-  const bgColor = '#fff9f6';
-  const borderColor = '#ddd';
+  const { serverUrl } = useContext(StoreContext);
+  const { primaryColor } = useContext(StoreContext);
+  const { bgColor } = useContext(StoreContext);
+  const { borderColor } = useContext(StoreContext);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -188,7 +189,7 @@ function SignUp() {
         >
           {loading ? <ClipLoader size={20} color="white" /> : 'Sign Up'}
         </button>
-        {err && <p className="text-red-500 text-center my-[10px]">*{err}</p>}
+        {err && <p className="text-red-500 text-center my-2.5">*{err}</p>}
         <button
           className="w-full mt-4 flex items-center justify-center gap-2 border rounded-lg px-4 py-2 transition cursor-pointer duration-200 border-gray-400 hover:bg-gray-100"
           onClick={() => null}
