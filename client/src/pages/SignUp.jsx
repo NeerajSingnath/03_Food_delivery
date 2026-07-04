@@ -1,16 +1,15 @@
+import axios from 'axios';
 import { useState } from 'react';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 import { FcGoogle } from 'react-icons/fc';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
+import { serverUrl } from '../App';
 
 function SignUp() {
   const primaryColor = '#ff4d2d';
-  const hoverColor = '#e64323';
   const bgColor = '#fff9f6';
   const borderColor = '#ddd';
-
-  const roles = ['user', 'owner', 'deliveryBoy'];
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,6 +20,38 @@ function SignUp() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState('');
   const navigate = useNavigate();
+
+  const handleSignup = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        `${serverUrl}/api/auth/signup`,
+        {
+          fullName,
+          email,
+          password,
+          mobile,
+          role,
+        },
+        { withCredentials: true },
+      );
+
+      if (res.status === 201) {
+        setFullName('');
+        setEmail('');
+        setPassword('');
+        setMobile('');
+        setRole('user');
+        setErr('');
+        navigate('/signin');
+      }
+    } catch (error) {
+      // console.log(error.response);
+      setErr(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -152,7 +183,7 @@ function SignUp() {
 
         <button
           className={`w-full font-semibold py-2 rounded-lg transition duration-200 bg-[#ff4d2d] text-white hover:bg-[#e64323] cursor-pointer`}
-          onClick={() => null}
+          onClick={handleSignup}
           disabled={loading}
         >
           {loading ? <ClipLoader size={20} color="white" /> : 'Sign Up'}
