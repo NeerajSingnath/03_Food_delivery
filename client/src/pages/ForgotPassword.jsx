@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useContext, useState } from 'react';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
@@ -17,16 +18,35 @@ function ForgotPassword() {
   const [otp, setOtp] = useState('');
   const [err, setErr] = useState('');
 
+  const handleSendOtp = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.post(`${serverUrl}/api/auth/send-otp`, { email });
+      console.log(res);
+      setStep(2);
+    } catch (error) {
+      setErr(error.response.data.message);
+    }
+  };
+
   return (
-    <div className="flex w-full items-center justify-center min-h-screen p-4 bg-[#fff9f6]">
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-8">
+    <div
+      className="flex w-full items-center justify-center min-h-screen p-4"
+      style={{ backgroundColor: bgColor }}
+    >
+      <div
+        className="bg-white rounded-xl shadow-lg w-full max-w-md p-8"
+        style={{ border: `1px solid ${borderColor}` }}
+      >
         <div className="flex items-center  gap-4 mb-4">
           <IoIosArrowRoundBack
             size={30}
-            className="text-[#ff4d2d] cursor-pointer"
+            className={`text-[${primaryColor}] cursor-pointer`}
             onClick={() => navigate('/signin')}
           />
-          <h1 className="text-2xl font-bold text-center text-[#ff4d2d]">
+          <h1
+            className={`text-2xl font-bold text-center text-[${primaryColor}]`}
+          >
             Forgot Password
           </h1>
         </div>
@@ -49,8 +69,8 @@ function ForgotPassword() {
               />
             </div>
             <button
-              className={`w-full font-semibold py-2 rounded-lg transition duration-200 bg-[#ff4d2d] text-white hover:bg-[#e64323] cursor-pointer`}
-              onClick={() => null}
+              className={`w-full font-semibold py-2 rounded-lg transition duration-200 bg-[${primaryColor}] text-white hover:bg-[#e64323] cursor-pointer`}
+              onClick={handleSendOtp}
               disabled={loading}
             >
               {loading ? <ClipLoader size={20} color="white" /> : 'Send Otp'}
@@ -78,7 +98,7 @@ function ForgotPassword() {
               />
             </div>
             <button
-              className={`w-full font-semibold py-2 rounded-lg transition duration-200 bg-[#ff4d2d] text-white hover:bg-[#e64323] cursor-pointer`}
+              className={`w-full font-semibold py-2 rounded-lg transition duration-200 bg-[${primaryColor}] text-white hover:bg-[#e64323] cursor-pointer`}
               onClick={() => null}
               disabled={loading}
             >
@@ -121,7 +141,7 @@ function ForgotPassword() {
               />
             </div>
             <button
-              className={`w-full font-semibold py-2 rounded-lg transition duration-200 bg-[#ff4d2d] text-white hover:bg-[#e64323] cursor-pointer`}
+              className={`w-full font-semibold py-2 rounded-lg transition duration-200 bg-[${primaryColor}] text-white hover:bg-[#e64323] cursor-pointer`}
               onClick={() => null}
               disabled={loading}
             >
