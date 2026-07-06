@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
@@ -17,15 +17,91 @@ function ForgotPassword() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [otp, setOtp] = useState('');
   const [err, setErr] = useState('');
+  const [timer, setTimer] = useState(0);
+  const [successMsg, setSuccessMsg] = useState('');
+
+  useEffect(() => {
+    if (!err) return;
+    const timer = setTimeout(() => setErr(''), 5000);
+    return () => clearTimeout(timer);
+  }, [err]);
+
+  useEffect(() => {
+    if (timer <= 0) return;
+    const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
+
+    return () => clearInterval(interval);
+  }, [timer]);
+
+  useEffect(() => {
+    if (!successMsg) return;
+    const timer = setTimeout(() => {
+      setSuccessMsg('');
+      setTimer(60);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [successMsg]);
 
   const handleSendOtp = async () => {
+    if (step === 2 && (timer > 0 || successMsg)) return;
     try {
       setLoading(true);
-      const res = await axios.post(`${serverUrl}/api/auth/send-otp`, { email });
+      const res = await axios.post(
+        `${serverUrl}/api/auth/send-otp`,
+        { email },
+        { withCredentials: true },
+      );
       console.log(res);
-      setStep(2);
+
+      if (step === 1) {
+        setStep(2);
+        setTimer(30);
+      } else if (step === 2) {
+        setSuccessMsg('Otp sent successfully');
+      }
     } catch (error) {
       setErr(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        `${serverUrl}/api/auth/verify-otp`,
+        { email, otp },
+        { withCredentials: true },
+      );
+      console.log(res);
+      setTimer(0);
+      setSuccessMsg('OTP verified successfully');
+
+      setStep(3);
+    } catch (error) {
+      setErr(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        `${serverUrl}/api/auth/reset-password`,
+        { email, password: newPassword },
+        { withCredentials: true },
+      );
+      console.log(res);
+
+      setStep(1);
+      navigate('/signin');
+    } catch (error) {
+      setErr(error.response.data.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,9 +173,28 @@ function ForgotPassword() {
                 required
               />
             </div>
+            <div className="text-right mb-4">
+              {successMsg ? (
+                <span className="text-green-600 font-semibold">
+                  {successMsg}
+                </span>
+              ) : timer > 0 ? (
+                <span className="text-gray-400 font-medium cursor-not-allowed">
+                  Resend Otp {timer}s
+                </span>
+              ) : (
+                <span
+                  className="cursor-pointer font-medium hover:underline"
+                  style={{ color: primaryColor }}
+                  onClick={handleSendOtp}
+                >
+                  Resend Otp
+                </span>
+              )}
+            </div>
             <button
               className={`w-full font-semibold py-2 rounded-lg transition duration-200 bg-[${primaryColor}] text-white hover:bg-[#e64323] cursor-pointer`}
-              onClick={() => null}
+              onClick={handleVerifyOtp}
               disabled={loading}
             >
               {loading ? <ClipLoader size={20} color="white" /> : 'Verify'}
@@ -142,7 +237,7 @@ function ForgotPassword() {
             </div>
             <button
               className={`w-full font-semibold py-2 rounded-lg transition duration-200 bg-[${primaryColor}] text-white hover:bg-[#e64323] cursor-pointer`}
-              onClick={() => null}
+              onClick={handleResetPassword}
               disabled={loading}
             >
               {loading ? (

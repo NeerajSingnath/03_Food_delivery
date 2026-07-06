@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 import { FcGoogle } from 'react-icons/fc';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +16,12 @@ function SignIn() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!err) return;
+    const timer = setTimeout(() => setErr(''), 5000);
+    return () => clearTimeout(timer);
+  }, [err]);
+
   const handleSignIn = async () => {
     setLoading(true);
     try {
@@ -27,6 +33,7 @@ function SignIn() {
         },
         { withCredentials: true },
       );
+
       console.log('result', result.data);
     } catch (error) {
       console.log('error', error);
