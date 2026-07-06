@@ -130,9 +130,32 @@ const sendOtp = async (req, res) => {
 
 const verifyOtp = async (req, res) => {
   try {
-  } catch (error) {}
+    const { email, otp } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'user not found' });
+    }
+    if (user.resetOtp !== otp) {
+      return res.status(400).json({ message: 'invalid OTP' });
+    }
+    if (user.otpExpires < Date.now()) {
+      return res.status(400).json({ message: 'OTP has expired' });
+    }
+
+    user.isOtpVerified = true;
+    user.resetOtp = undefined;
+    user.otpExpires = undefined;
+    await user.save();
+
+    return res.status(200).json({ message: 'OTP verified successfully' });
+  } catch (error) {
+    return res.status(500).json({ message: `verify otp error ${error}` });
+  }
 };
 
-const resetPassword = async (req, res) => {};
+const resetPassword = async (req, res) => {
+  try {
+  } catch (error) {}
+};
 
 export { resetPassword, sendOtp, signIn, signOut, signUp, verifyOtp };
