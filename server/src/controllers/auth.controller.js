@@ -155,6 +155,20 @@ const verifyOtp = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'user not found' });
+    }
+    if (!user.isOtpVerified) {
+      return res.status(400).json({ message: 'OTP not verified' });
+    }
+    const hashPassword = await bcrypt.hash(password, 10);
+    user.password = hashPassword;
+    user.isOtpVerified = false;
+
+    await user.save();
+    return res.status(200).json({ message: 'Password reset successfully' });
   } catch (error) {}
 };
 
