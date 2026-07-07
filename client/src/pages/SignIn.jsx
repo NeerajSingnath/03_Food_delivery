@@ -46,11 +46,31 @@ function SignIn() {
   };
 
   const handleGoogleAuth = async () => {
+    setLoading(true);
+    setErr('');
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
-    console.log(result);
-  };
 
+    try {
+      const res = await axios.post(
+        `${serverUrl}/api/auth/google-auth`,
+        {
+          email: result.user.email,
+        },
+        { withCredentials: true },
+      );
+
+      if (res.status === 200 || res.status === 201) {
+        console.log('here');
+        setErr('');
+        setLoading(false);
+        navigate('/');
+      }
+    } catch (error) {
+      setErr(error.response.data.message);
+      setLoading(false);
+    }
+  };
   return (
     <div
       className="min-h-screen w-full flex items-center justify-center p-4"

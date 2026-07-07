@@ -169,19 +169,30 @@ const resetPassword = async (req, res) => {
 
     await user.save();
     return res.status(200).json({ message: 'Password reset successfully' });
-  } catch (error) {}
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: `Failed to reset password ${error.message}` });
+  }
 };
 
 const googleAuth = async (req, res) => {
   try {
-    const { fullName, email, mobile } = req.body;
+    const { fullName, email, mobile, role } = req.body;
     let user = await User.findOne({ email });
 
     if (!user) {
+      if (!fullName || !mobile || !role) {
+        return res.status(400).json({
+          message: 'Account does not exist. Please sign up first using the Registration page.',
+        });
+      }
+
       user = await User.create({
         fullName,
         email,
         mobile,
+        role,
       });
 
       const token = await generateToken(user._id);
@@ -196,6 +207,18 @@ const googleAuth = async (req, res) => {
         .status(201)
         .json({ message: 'User created successfully', user: user, token });
     }
+
+    const token = await generateToken(user._id);
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res
+      .status(200)
+      .json({ message: 'User signed in successfully', user: user, token });
   } catch (error) {
     return res
       .status(500)

@@ -57,12 +57,36 @@ function SignUp() {
   };
 
   const handleGoogleAuth = async () => {
+    setLoading(true);
     if (!mobile) {
-      return alert('Mobile number is required');
+      setErr('Mobile number is required');
+      setLoading(false);
+      return;
     }
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
-    console.log(result);
+
+    try {
+      const res = await axios.post(
+        `${serverUrl}/api/auth/google-auth`,
+        {
+          fullName: result.user.displayName,
+          email: result.user.email,
+          mobile,
+          role,
+        },
+        { withCredentials: true },
+      );
+
+      if (res.status === 200 || res.status === 201) {
+        setErr('');
+        navigate('/');
+      }
+    } catch (error) {
+      setErr(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
