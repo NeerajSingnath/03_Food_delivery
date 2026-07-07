@@ -1,10 +1,12 @@
 import axios from 'axios';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useContext, useEffect, useState } from 'react';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 import { FcGoogle } from 'react-icons/fc';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import { StoreContext } from '../context/StoreContext';
+import { auth } from '../firebase';
 
 function SignIn() {
   const { bgColor, borderColor, primaryColor, serverUrl } =
@@ -41,6 +43,12 @@ function SignIn() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleAuth = async () => {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    console.log(result);
   };
 
   return (
@@ -130,7 +138,7 @@ function SignIn() {
 
         <button
           className="w-full mt-4 flex items-center justify-center gap-2 border rounded-lg px-4 py-2 transition cursor-pointer duration-200 border-gray-400 hover:bg-gray-100"
-          onClick={() => null}
+          onClick={() => handleGoogleAuth()}
         >
           <FcGoogle size={20} />
           <span>Sign In with Google</span>

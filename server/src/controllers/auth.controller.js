@@ -172,4 +172,43 @@ const resetPassword = async (req, res) => {
   } catch (error) {}
 };
 
-export { resetPassword, sendOtp, signIn, signOut, signUp, verifyOtp };
+const googleAuth = async (req, res) => {
+  try {
+    const { fullName, email, mobile } = req.body;
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        fullName,
+        email,
+        mobile,
+      });
+
+      const token = await generateToken(user._id);
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      return res
+        .status(201)
+        .json({ message: 'User created successfully', user: user, token });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: `Server side error google auth ${error.message}` });
+  }
+};
+
+export {
+  googleAuth,
+  resetPassword,
+  sendOtp,
+  signIn,
+  signOut,
+  signUp,
+  verifyOtp,
+};
