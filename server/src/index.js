@@ -6,6 +6,7 @@ import dns from 'node:dns';
 import dotenv from 'dotenv';
 import connectDb from './config/db.js';
 import authRouter from './routes/auth.route.js';
+import userRouter from './routes/user.route.js';
 
 dotenv.config();
 dns.setServers([process.env.DNS1, process.env.DNS2]);
