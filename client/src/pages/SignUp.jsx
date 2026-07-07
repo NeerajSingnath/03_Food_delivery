@@ -3,12 +3,16 @@ import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useContext, useState } from 'react';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 import { FcGoogle } from 'react-icons/fc';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import { StoreContext } from '../context/StoreContext';
-import { auth } from '../firebase';
+import { setUserData } from '../redux/user.slice';
+import { auth } from '../utils/firebase';
 
 function SignUp() {
+  const dispatch = useDispatch();
+
   const { serverUrl } = useContext(StoreContext);
   const { primaryColor } = useContext(StoreContext);
   const { bgColor } = useContext(StoreContext);
@@ -40,6 +44,7 @@ function SignUp() {
       );
 
       if (res.status === 201) {
+        dispatch(setUserData(res.data.user));
         setFullName('');
         setEmail('');
         setPassword('');

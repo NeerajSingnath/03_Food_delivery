@@ -3,12 +3,15 @@ import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useContext, useEffect, useState } from 'react';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 import { FcGoogle } from 'react-icons/fc';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import { StoreContext } from '../context/StoreContext';
-import { auth } from '../firebase';
+import { setUserData } from '../redux/user.slice';
+import { auth } from '../utils/firebase';
 
 function SignIn() {
+  const dispatch = useDispatch();
   const { bgColor, borderColor, primaryColor, serverUrl } =
     useContext(StoreContext);
   const [email, setEmail] = useState('');
@@ -27,7 +30,7 @@ function SignIn() {
   const handleSignIn = async () => {
     setLoading(true);
     try {
-      const result = await axios.post(
+      const res = await axios.post(
         `${serverUrl}/api/auth/signin`,
         {
           email,
@@ -36,7 +39,9 @@ function SignIn() {
         { withCredentials: true },
       );
 
-      console.log('result', result.data);
+      dispatch(setUserData(res.data.user));
+
+      console.log('result', res.data);
     } catch (error) {
       console.log('error', error);
       setErr(error.response.data.message);

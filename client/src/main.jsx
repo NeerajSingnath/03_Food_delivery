@@ -1,13 +1,17 @@
 import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
-import './index.css';
 import StoreContextProvider from './context/StoreContext.jsx';
+import './index.css';
+import { store } from './redux/store';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-    <StoreContextProvider>
-      <App />
-    </StoreContextProvider>
+    <Provider store={store}>
+      <StoreContextProvider>
+        <App />
+      </StoreContextProvider>
+    </Provider>
   </BrowserRouter>,
 );
