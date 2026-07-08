@@ -52,7 +52,7 @@ function SignIn() {
   };
 
   const handleGoogleAuth = async () => {
-    setLoading(true);
+    // setLoading(true);
     setErr('');
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
@@ -75,6 +75,8 @@ function SignIn() {
       }
     } catch (error) {
       setErr(error.response.data.message);
+      setLoading(false);
+    } finally {
       setLoading(false);
     }
   };
