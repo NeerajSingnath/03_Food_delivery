@@ -51,7 +51,7 @@ function SignUp() {
         setMobile('');
         setRole('user');
         setErr('');
-        navigate('/signin');
+        navigate('/');
       }
     } catch (error) {
       // console.log(error.response);
@@ -84,6 +84,7 @@ function SignUp() {
       );
 
       if (res.status === 200 || res.status === 201) {
+        dispatch(setUserData(res.data.user));
         setErr('');
         navigate('/');
       }

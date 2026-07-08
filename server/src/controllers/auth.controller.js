@@ -184,7 +184,8 @@ const googleAuth = async (req, res) => {
     if (!user) {
       if (!fullName || !mobile || !role) {
         return res.status(400).json({
-          message: 'Account does not exist. Please sign up first using the Registration page.',
+          message:
+            'Account does not exist. Please sign up first using the Registration page.',
         });
       }
 

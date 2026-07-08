@@ -42,6 +42,7 @@ function SignIn() {
       dispatch(setUserData(res.data.user));
 
       console.log('result', res.data);
+      navigate('/');
     } catch (error) {
       console.log('error', error);
       setErr(error.response.data.message);
@@ -66,6 +67,7 @@ function SignIn() {
       );
 
       if (res.status === 200 || res.status === 201) {
+        dispatch(setUserData(res.data.user));
         console.log('here');
         setErr('');
         setLoading(false);
