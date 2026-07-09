@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
+import useGetCity from './hooks/useGetCity';
 import useGetCurrentUser from './hooks/useGetCurrentUser';
 import ForgotPassword from './pages/ForgotPassword';
 import Home from './pages/Home';
@@ -9,6 +10,7 @@ import SignUp from './pages/SignUp';
 function App() {
   const { userData, loading } = useSelector((state) => state.user);
   useGetCurrentUser();
+  useGetCity();
 
   if (loading) {
     return (

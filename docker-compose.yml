@@ -1,0 +1,48 @@
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: food-delivery-server
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server:/usr/src/app 
+      - /usr/src/app/node_modules
+    env_file:
+      - ./server/.env
+    environment:
+      - NODE_ENV=development
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: build
+    container_name: food-delivery-client
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file:
+      - ./client/.env
+    environment:
+      - NODE_ENV=development
+    command: npm run dev -- --host
+    depends_on:
+      - server
+
+# Optional: To use a local MongoDB service instead of MongoDB Atlas, you can uncomment the lines below,
+# and update MONGODB_URI in server/.env to "mongodb://mongodb:27017/veingo"
+#
+#   mongodb:
+#     image: mongo:latest
+#     container_name: food-delivery-mongodb
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - mongo-data:/data/db
+#
+# volumes:
+#   mongo-data:
