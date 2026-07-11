@@ -1,7 +1,7 @@
 import Shop from '../models/shop.models.js';
 import uploadOnCloudinary from '../utils/claoudinary.js';
 
-export const createShop = async (req, res) => {
+export const createAndEditShop = async (req, res) => {
   try {
     const { name, city, state, address } = req.body;
 
@@ -25,19 +25,38 @@ export const createShop = async (req, res) => {
         .status(500)
         .json({ success: false, message: 'Failed to upload shop image' });
     }
-    const shop = await Shop.create({
-      name,
-      city,
-      state,
-      address,
-      image: imageUrl,
-      owner: req.user.id,
-    });
+    let shop = await Shop.findOne({ owner: req.userId });
+
+    if (!shop) {
+      shop = await Shop.create({
+        name,
+        city,
+        state,
+        address,
+        image: imageUrl,
+        owner: req.userId,
+      });
+    } else {
+      shop = await Shop.findOneAndUpdate(
+        { _id: shop._id },
+        {
+          name,
+          city,
+          state,
+          address,
+          image: imageUrl,
+          owner: req.userId,
+        },
+        { new: true },
+      );
+    }
+
     await shop.populate('owner');
     return res
       .status(201)
-      .json({ success: true, message: 'Shop created successfully', shop });
+      .json({ success: true, message: 'Shop Details updated Successfully', shop });
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
       .json({ success: false, message: 'Failed to create shop' });
