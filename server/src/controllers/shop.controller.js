@@ -52,13 +52,32 @@ export const createAndEditShop = async (req, res) => {
     }
 
     await shop.populate('owner');
-    return res
-      .status(201)
-      .json({ success: true, message: 'Shop Details updated Successfully', shop });
+    return res.status(201).json({
+      success: true,
+      message: 'Shop Details updated Successfully',
+      shop,
+    });
   } catch (error) {
     console.log(error);
     return res
       .status(500)
       .json({ success: false, message: 'Failed to create shop' });
+  }
+};
+
+export const getMyShop = async (req, res) => {
+  try {
+    const shop = await Shop.findOne({ owner: req.userId }).populate(
+      'owner items',
+    );
+    if (!shop) {
+      return null;
+    }
+    return res.status(200).json({ success: true, message: 'Shop found', shop });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Failed to get shop details' });
   }
 };
