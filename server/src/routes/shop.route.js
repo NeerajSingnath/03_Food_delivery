@@ -15,4 +15,8 @@ shopRouter.post(
   createAndEditShop,
 );
 shopRouter.get('/my-shop', isAuth, getMyShop);
+
 export default shopRouter;
+
+
+

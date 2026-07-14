@@ -13,6 +13,7 @@ import { setUserData } from '../redux/user.slice';
 function Nav() {
   const [showSearch, setShowSearch] = useState(false);
   const { userData, city } = useSelector((state) => state.user);
+  const {myShopData} = useSelector(state=>state.owner)
 
   const [show, setShow] = useState(false);
 
@@ -25,6 +26,7 @@ function Nav() {
 
   const handleLogOut = async () => {
     try {
+
       const res = await axios.get(`${serverUrl}/api/auth/signout`, {
         withCredentials: true,
       });
@@ -91,7 +93,7 @@ function Nav() {
           ))}
         {userData.role == 'owner' ? (
           <>
-            {true && (
+            {myShopData && (
               <>
                 {' '}
                 <button
@@ -107,8 +109,6 @@ function Nav() {
                 >
                   <FaPlus size={20} />
                 </button>
-              </>
-            )}
 
             <div
               className="hidden md:flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] font-medium"
@@ -117,6 +117,9 @@ function Nav() {
               <TbReceipt2 size={20} />
               <span>My Orders</span>
             </div>
+             </>
+            )}
+
             <div
               className="md:hidden flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] font-medium"
               onClick={() => navigate('/my-orders')}
@@ -155,7 +158,7 @@ function Nav() {
         </div>
         {show && (
           <div
-            className={`fixed top-[80px] right-[10px] 
+            className={`fixed top-[80px] right-[10px]
                     ${userData.role == 'deliveryBoy' ? 'md:right-[20%] lg:right-[40%]' : 'md:right-[10%] lg:right-[25%]'} w-[180px] bg-white shadow-2xl rounded-xl p-[20px] flex flex-col gap-[10px] z-[9999]`}
           >
             <div className="text-[17px] font-semibold">{userData.fullName}</div>

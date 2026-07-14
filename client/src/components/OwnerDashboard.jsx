@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import Nav from './Nav';
 
 function OwnerDashboard() {
-  const { myShopData, loading } = useSelector((state) => state.user);
+  const { myShopData } = useSelector((state) => state.owner);
+  const {loading } = useSelector((state)=>state.user)
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
