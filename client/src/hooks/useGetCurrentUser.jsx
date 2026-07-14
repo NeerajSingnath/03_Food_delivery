@@ -18,7 +18,7 @@ function useGetCurrentUser() {
           },
         );
 
-        console.log(result.data);
+        // console.log(result.data);
         dispatch(setUserData(result.data.user));
         dispatch(setLoading(false));
       } catch (error) {

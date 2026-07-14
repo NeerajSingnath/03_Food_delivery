@@ -5,7 +5,10 @@ import Nav from './Nav';
 
 function OwnerDashboard() {
   const { myShopData } = useSelector((state) => state.owner);
-  const {loading } = useSelector((state)=>state.user)
+  const { userData } = useSelector((state) => state.user);
+  console.log(userData);
+
+  const { loading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -39,7 +42,7 @@ function OwnerDashboard() {
         <div className="w-full flex flex-col items-center gap-6 px-4 sm:px-6">
           <h1 className="text-2xl sm:text-3xl text-gray-900 flex items-center gap-3 mt-8 text-center">
             <FaUtensils className="text-[#ff4d2d] w-14 h-14 " />
-            Welcome to {'myShopData'}
+            Welcome {userData.fullName}
           </h1>
 
           <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-orange-100 hover:shadow-2xl transition-all duration-300 w-full max-w-3xl relative">
@@ -50,18 +53,18 @@ function OwnerDashboard() {
               <FaPen size={20} />
             </div>
             <img
-              src={'myShopData.image'}
-              alt={'myShopData.name'}
+              src={myShopData.image}
+              alt={myShopData.name}
               className="w-full h-48 sm:h-64 object-cover"
             />
             <div className="p-4 sm:p-6">
               <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">
-                {'myShopData.name'}
+                {myShopData.name}
               </h1>
               <p className="text-gray-500 ">
-                {'myShopData.city'},{'myShopData.state'}
+                {myShopData.city},{myShopData.state}
               </p>
-              <p className="text-gray-500 mb-4">{'myShopData.address'}</p>
+              <p className="text-gray-500 mb-4">{myShopData.address}</p>
             </div>
           </div>
 

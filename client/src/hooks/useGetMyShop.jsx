@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { StoreContext } from '../context/StoreContext';
+import { setMyShopData } from '../redux/owner.slice';
 
 function useGetMyShop() {
-  const [myShopData, setMyShopData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { myShopData } = useSelector((state) => state.owner);
 
   const { serverUrl } = useContext(StoreContext);
   const dispatch = useDispatch();
@@ -18,8 +19,8 @@ function useGetMyShop() {
         });
 
         if (result.data.success) {
-          console.log(result);
-          dispatch(setMyShopData(result.data));
+          console.log(result.data.shop);
+          dispatch(setMyShopData(result.data.shop));
         }
       } catch (error) {
         console.log(error);

@@ -13,7 +13,7 @@ import { setUserData } from '../redux/user.slice';
 function Nav() {
   const [showSearch, setShowSearch] = useState(false);
   const { userData, city } = useSelector((state) => state.user);
-  const {myShopData} = useSelector(state=>state.owner)
+  const { myShopData } = useSelector((state) => state.owner);
 
   const [show, setShow] = useState(false);
 
@@ -26,14 +26,17 @@ function Nav() {
 
   const handleLogOut = async () => {
     try {
-
       const res = await axios.get(`${serverUrl}/api/auth/signout`, {
         withCredentials: true,
       });
-      dispatch(setUserData(null));
-      navigate('/signin');
+
+      if (res) {
+        dispatch(setUserData(null));
+        navigate('/signin');
+      }
     } catch (error) {
       console.log(error);
+      setErr(error);
     }
   };
   return (
@@ -109,15 +112,14 @@ function Nav() {
                 >
                   <FaPlus size={20} />
                 </button>
-
-            <div
-              className="hidden md:flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] font-medium"
-              onClick={() => navigate('/my-orders')}
-            >
-              <TbReceipt2 size={20} />
-              <span>My Orders</span>
-            </div>
-             </>
+                <div
+                  className="hidden md:flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] font-medium"
+                  onClick={() => navigate('/my-orders')}
+                >
+                  <TbReceipt2 size={20} />
+                  <span>My Orders</span>
+                </div>
+              </>
             )}
 
             <div
