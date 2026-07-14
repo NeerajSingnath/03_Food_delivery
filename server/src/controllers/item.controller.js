@@ -3,6 +3,7 @@ import Shop from '../models/shop.models.js';
 import uploadOnCloudinary from '../utils/claoudinary.js';
 
 export const addItem = async (req, res) => {
+  console.log("here")
   try {
     const { name, category, foodType, price } = req.body;
     const image = req.file;
@@ -46,7 +47,7 @@ export const addItem = async (req, res) => {
 
     return res
       .status(201)
-      .json({ success: true, message: 'Item added successfully', item });
+      .json({ success: true, message: 'Item added successfully', shop});
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: 'Internal server error' });

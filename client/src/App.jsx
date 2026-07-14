@@ -4,11 +4,12 @@ import { ClipLoader } from 'react-spinners';
 import useGetCity from './hooks/useGetCity';
 import useGetCurrentUser from './hooks/useGetCurrentUser';
 import useGetMyShop from './hooks/useGetMyShop';
+import AddItem from './pages/AddItem';
+import CreateEditShop from './pages/CreateEditShop';
 import ForgotPassword from './pages/ForgotPassword';
 import Home from './pages/Home';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
-import CreateEditShop from './pages/CreateEditShop';
 function App() {
   const { userData, loading } = useSelector((state) => state.user);
   useGetCurrentUser();
@@ -41,11 +42,15 @@ function App() {
       />
       <Route
         path="forgot-password"
-        element={!userData ? <ForgotPassword/> : <Navigate to={'/'} />}
+        element={!userData ? <ForgotPassword /> : <Navigate to={'/'} />}
       />
-       <Route
+      <Route
         path="create-edit-shop"
         element={userData ? <CreateEditShop /> : <Navigate to={'/signin'} />}
+      />
+      <Route
+        path="add-item"
+        element={userData ? <AddItem /> : <Navigate to={'/signin'} />}
       />
     </Routes>
   );

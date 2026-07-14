@@ -5,11 +5,11 @@ import upload from '../middlewares/multer.middleware.js';
 
 const itemRouter = express.Router();
 
-itemRouter.post('/add-item', isAuth, upload.single('itemImage'), addItem);
+itemRouter.post('/add-item', isAuth, upload.single('image'), addItem);
 itemRouter.put(
   '/edit-item/:itemId',
   isAuth,
-  upload.single('itemImage'),
+  upload.single('image'),
   editItem,
 );
 
