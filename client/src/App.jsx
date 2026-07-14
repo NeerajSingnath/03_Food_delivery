@@ -8,6 +8,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import Home from './pages/Home';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import CreateEditShop from './pages/CreateEditShop';
 function App() {
   const { userData, loading } = useSelector((state) => state.user);
   useGetCurrentUser();
@@ -40,7 +41,11 @@ function App() {
       />
       <Route
         path="forgot-password"
-        element={userData ? <Home /> : <ForgotPassword />}
+        element={!userData ? <ForgotPassword/> : <Navigate to={'/'} />}
+      />
+       <Route
+        path="create-edit-shop"
+        element={userData ? <CreateEditShop /> : <Navigate to={'/signin'} />}
       />
     </Routes>
   );
