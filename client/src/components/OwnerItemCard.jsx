@@ -14,11 +14,11 @@ function OwnerItemCard({ data }) {
   const { serverUrl } = useContext(StoreContext);
   const handleDelete = async () => {
     try {
-      const result = await axios.get(
-        `${serverUrl}/api/item/delete/${data._id}`,
+      const result = await axios.delete(
+        `${serverUrl}/api/item/delete-item/${data._id}`,
         { withCredentials: true },
       );
-      dispatch(setMyShopData(result.data));
+      dispatch(setMyShopData(result.data.shop));
     } catch (error) {
       console.log(error);
     }
