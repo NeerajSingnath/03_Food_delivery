@@ -11,11 +11,11 @@ function OwnerItemCard({ data }) {
   const { userData } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { ServerUrl } = useContext(StoreContext);
+  const { serverUrl } = useContext(StoreContext);
   const handleDelete = async () => {
     try {
       const result = await axios.get(
-        `${ServerUrl}/api/item/delete/${data._id}`,
+        `${serverUrl}/api/item/delete/${data._id}`,
         { withCredentials: true },
       );
       dispatch(setMyShopData(result.data));

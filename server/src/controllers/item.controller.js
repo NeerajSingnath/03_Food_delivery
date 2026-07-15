@@ -45,7 +45,12 @@ export const addItem = async (req, res) => {
     shop.items.push(item._id);
     await shop.save();
 
-    await shop.populate('items owner');
+    await shop.populate({
+      path: 'items',
+      options: { sort: { createdAt: -1 } },
+    });
+
+    await shop.populate('owner');
 
     return res
       .status(201)
@@ -93,9 +98,16 @@ export const editItem = async (req, res) => {
     item.image = imageUrl;
 
     await item.save();
+
+    const shop = await Shop.findOne({ owner: req.userId })
+      .populate({
+        path: 'items',
+        options: { sort: { createdAt: -1 } },
+      })
+      .populate('owner');
     return res
       .status(200)
-      .json({ success: true, message: 'Item updated successfully', item });
+      .json({ success: true, message: 'Item updated successfully', shop });
   } catch (error) {
     console.log(error);
     return res
@@ -107,6 +119,7 @@ export const editItem = async (req, res) => {
 export const getItemByID = async (req, res) => {
   try {
     const itemId = req.params.itemId;
+    console.log(itemId);
     const item = await Item.findById(itemId);
     if (!item) {
       return res
@@ -120,5 +133,35 @@ export const getItemByID = async (req, res) => {
     return res
       .status(500)
       .json({ success: false, message: 'Failed to get item' });
+  }
+};
+
+export const deleteItem = async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+    const item = await Item.findByIdAndDelete(itemId);
+    if (!item) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Item not found' });
+    }
+    const shop = await Shop.findOneAndUpdate(
+      { owner: req.userId },
+      { $pull: { items: itemId } },
+      { new: true },
+    )
+      .populate({
+        path: 'items',
+        options: { sort: { createdAt: -1 } },
+      })
+      .populate('owner');
+    return res
+      .status(200)
+      .json({ success: true, message: 'Item deleted successfully', shop });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Failed to delete item' });
   }
 };

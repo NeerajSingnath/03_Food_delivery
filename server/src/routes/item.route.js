@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   addItem,
+  deleteItem,
   editItem,
   getItemByID,
 } from '../controllers/item.controller.js';
@@ -11,6 +12,7 @@ const itemRouter = express.Router();
 
 itemRouter.post('/add-item', isAuth, upload.single('image'), addItem);
 itemRouter.put('/edit-item/:itemId', isAuth, upload.single('image'), editItem);
-itemRouter.post('/get-item/:itemId', isAuth, getItemByID);
+itemRouter.get('/get-item/:itemId', isAuth, getItemByID);
+itemRouter.delete('/delete-item/:itemId', isAuth, deleteItem);
 
 export default itemRouter;

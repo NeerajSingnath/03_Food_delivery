@@ -10,7 +10,7 @@ import { StoreContext } from '../context/StoreContext';
 import { setMyShopData } from '../redux/owner.slice';
 function EditItem() {
   const navigate = useNavigate();
-  const { ServerUrl } = useContext(StoreContext);
+  const { serverUrl } = useContext(StoreContext);
   const { myShopData } = useSelector((state) => state.owner);
   const { itemId } = useParams();
   const [currentItem, setCurrentItem] = useState(null);
@@ -53,12 +53,13 @@ function EditItem() {
       if (backendImage) {
         formData.append('image', backendImage);
       }
-      const result = await axios.post(
-        `${ServerUrl}/api/item/edit-item/${itemId}`,
+      const result = await axios.put(
+        `${serverUrl}/api/item/edit-item/${itemId}`,
         formData,
         { withCredentials: true },
       );
-      dispatch(setMyShopData(result.data));
+      console.log(result.data);
+      dispatch(setMyShopData(result.data.shop));
       setLoading(false);
       navigate('/');
     } catch (error) {
@@ -69,12 +70,16 @@ function EditItem() {
 
   useEffect(() => {
     const handleGetItemById = async () => {
+      console.log(serverUrl);
       try {
         const result = await axios.get(
-          `${ServerUrl}/api/item/get-by-id/${itemId}`,
-          { withCredentials: true },
+          `${serverUrl}/api/item/get-item/${itemId}`,
+          {
+            withCredentials: true,
+          },
         );
         setCurrentItem(result.data);
+        console.log(result.data);
       } catch (error) {
         console.log(error);
       }
