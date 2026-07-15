@@ -1,26 +1,26 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { FaUtensils } from 'react-icons/fa';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 
-import { useContext } from 'react';
 import { StoreContext } from '../context/StoreContext';
 import { setMyShopData } from '../redux/owner.slice';
-
-function AddItem() {
+function EditItem() {
   const navigate = useNavigate();
+  const { ServerUrl } = useContext(StoreContext);
   const { myShopData } = useSelector((state) => state.owner);
-  const [loading, setLoading] = useState(false);
+  const { itemId } = useParams();
+  const [currentItem, setCurrentItem] = useState(null);
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
-  const [frontendImage, setFrontendImage] = useState(null);
+  const [frontendImage, setFrontendImage] = useState('');
   const [backendImage, setBackendImage] = useState(null);
   const [category, setCategory] = useState('');
-  const [foodType, setFoodType] = useState('veg');
-  const { serverUrl } = useContext(StoreContext);
+  const [foodType, setFoodType] = useState('');
+  const [loading, setLoading] = useState(false);
   const categories = [
     'Snacks',
     'Main Course',
@@ -54,12 +54,11 @@ function AddItem() {
         formData.append('image', backendImage);
       }
       const result = await axios.post(
-        `${serverUrl}/api/item/add-item`,
+        `${ServerUrl}/api/item/edit-item/${itemId}`,
         formData,
         { withCredentials: true },
       );
-      // console.log(result.data.shop);
-      dispatch(setMyShopData(result.data.shop));
+      dispatch(setMyShopData(result.data));
       setLoading(false);
       navigate('/');
     } catch (error) {
@@ -67,6 +66,29 @@ function AddItem() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const handleGetItemById = async () => {
+      try {
+        const result = await axios.get(
+          `${ServerUrl}/api/item/get-by-id/${itemId}`,
+          { withCredentials: true },
+        );
+        setCurrentItem(result.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    handleGetItemById();
+  }, [itemId]);
+
+  useEffect(() => {
+    setName(currentItem?.name || '');
+    setPrice(currentItem?.price || 0);
+    setCategory(currentItem?.category || '');
+    setFoodType(currentItem?.foodType || '');
+    setFrontendImage(currentItem?.image || '');
+  }, [currentItem]);
   return (
     <div className="flex justify-center flex-col items-center p-6 bg-gradient-to-br from-orange-50 relative to-white min-h-screen">
       <div
@@ -81,7 +103,7 @@ function AddItem() {
           <div className="bg-orange-100 p-4 rounded-full mb-4">
             <FaUtensils className="text-[#ff4d2d] w-16 h-16" />
           </div>
-          <div className="text-3xl font-extrabold text-gray-900">Add Food</div>
+          <div className="text-3xl font-extrabold text-gray-900">Edit Food</div>
         </div>
         <form className="space-y-5" onSubmit={handleSubmit}>
           <div>
@@ -90,7 +112,7 @@ function AddItem() {
             </label>
             <input
               type="text"
-              placeholder="Enter Food Name"
+              placeholder="Enter Item Name"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               onChange={(e) => setName(e.target.value)}
               value={name}
@@ -171,4 +193,4 @@ function AddItem() {
   );
 }
 
-export default AddItem;
+export default EditItem;

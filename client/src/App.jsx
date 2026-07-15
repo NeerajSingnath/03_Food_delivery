@@ -6,6 +6,7 @@ import useGetCurrentUser from './hooks/useGetCurrentUser';
 import useGetMyShop from './hooks/useGetMyShop';
 import AddItem from './pages/AddItem';
 import CreateEditShop from './pages/CreateEditShop';
+import EditItem from './pages/EditItem';
 import ForgotPassword from './pages/ForgotPassword';
 import Home from './pages/Home';
 import SignIn from './pages/SignIn';
@@ -51,6 +52,10 @@ function App() {
       <Route
         path="add-item"
         element={userData ? <AddItem /> : <Navigate to={'/signin'} />}
+      />
+      <Route
+        path="/edit-item/:itemId"
+        element={userData ? <EditItem /> : <Navigate to={'/signin'} />}
       />
     </Routes>
   );

@@ -3,7 +3,7 @@ import Shop from '../models/shop.models.js';
 import uploadOnCloudinary from '../utils/claoudinary.js';
 
 export const addItem = async (req, res) => {
-  console.log("here")
+  console.log('here');
   try {
     const { name, category, foodType, price } = req.body;
     const image = req.file;
@@ -45,9 +45,11 @@ export const addItem = async (req, res) => {
     shop.items.push(item._id);
     await shop.save();
 
+    await shop.populate('items owner');
+
     return res
       .status(201)
-      .json({ success: true, message: 'Item added successfully', shop});
+      .json({ success: true, message: 'Item added successfully', shop });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -99,5 +101,24 @@ export const editItem = async (req, res) => {
     return res
       .status(500)
       .json({ success: false, message: 'Failed to update item' });
+  }
+};
+
+export const getItemByID = async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+    const item = await Item.findById(itemId);
+    if (!item) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Item not found' });
+    }
+
+    return res.status(200).json(item);
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Failed to get item' });
   }
 };
