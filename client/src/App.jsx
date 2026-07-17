@@ -4,6 +4,7 @@ import { ClipLoader } from 'react-spinners';
 import useGetCity from './hooks/useGetCity';
 import useGetCurrentUser from './hooks/useGetCurrentUser';
 import useGetMyShop from './hooks/useGetMyShop';
+import useGetShopByCity from './hooks/useGetShopByCity';
 import AddItem from './pages/AddItem';
 import CreateEditShop from './pages/CreateEditShop';
 import EditItem from './pages/EditItem';
@@ -16,6 +17,7 @@ function App() {
   useGetCurrentUser();
   useGetCity();
   useGetMyShop();
+  useGetShopByCity();
 
   if (loading) {
     return (

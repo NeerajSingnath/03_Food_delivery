@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { FaLocationDot, FaPlus } from 'react-icons/fa6';
 import { FiShoppingCart } from 'react-icons/fi';
 import { IoIosSearch } from 'react-icons/io';
@@ -8,11 +8,11 @@ import { TbReceipt2 } from 'react-icons/tb';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { StoreContext } from '../context/StoreContext';
-import { setUserData } from '../redux/user.slice';
+import { setUserData, setSearchItems } from '../redux/user.slice';
 
 function Nav() {
   const [showSearch, setShowSearch] = useState(false);
-  const { userData, city } = useSelector((state) => state.user);
+  const { userData, city, itemsInMyCity } = useSelector((state) => state.user);
   const { myShopData } = useSelector((state) => state.owner);
 
   const [show, setShow] = useState(false);
@@ -23,6 +23,17 @@ function Nav() {
 
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (query.trim() === '') {
+      dispatch(setSearchItems([]));
+    } else {
+      const filtered = itemsInMyCity?.filter((item) =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+      ) || [];
+      dispatch(setSearchItems(filtered));
+    }
+  }, [query, itemsInMyCity, dispatch]);
 
   const handleLogOut = async () => {
     try {

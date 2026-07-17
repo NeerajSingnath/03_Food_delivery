@@ -88,7 +88,8 @@ export const getMyShop = async (req, res) => {
 
 export const getShopByCity = async (req, res) => {
   try {
-    const { city } = req.body;
+    const { city } = req.params;
+    console.log(city);
     const shops = await Shop.find({
       city: { $regex: new RegExp(`^${city}$`, 'i') },
     })

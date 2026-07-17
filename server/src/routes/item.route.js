@@ -3,6 +3,7 @@ import {
   addItem,
   deleteItem,
   editItem,
+  getItemByCity,
   getItemByID,
 } from '../controllers/item.controller.js';
 import { isAuth } from '../middlewares/auth.middleware.js';
@@ -14,5 +15,6 @@ itemRouter.post('/add-item', isAuth, upload.single('image'), addItem);
 itemRouter.put('/edit-item/:itemId', isAuth, upload.single('image'), editItem);
 itemRouter.get('/get-item/:itemId', isAuth, getItemByID);
 itemRouter.delete('/delete-item/:itemId', isAuth, deleteItem);
+itemRouter.get('/get-by-city/:city', isAuth, getItemByCity);
 
 export default itemRouter;
