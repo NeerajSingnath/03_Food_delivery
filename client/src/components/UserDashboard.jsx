@@ -197,7 +197,7 @@ function UserDashboard() {
           Suggested Food Items
         </h1>
 
-        <div className="w-full h-auto flex flex-wrap gap-[20px] justify-center">
+        <div className="w-full h-auto flex flex-wrap gap-[20px]">
           {updatedItemsList?.map((item, index) => (
             <FoodCard key={index} data={item} />
           ))}

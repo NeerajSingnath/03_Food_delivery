@@ -166,9 +166,10 @@ export const deleteItem = async (req, res) => {
   }
 };
 
-export const getItemByCity = async (res, req) => {
+export const getItemByCity = async (req, res) => {
   try {
     const { city } = req.params;
+    console.log(city);
     if (!city) {
       return res
         .status(400)
@@ -176,7 +177,7 @@ export const getItemByCity = async (res, req) => {
     }
 
     const shops = await Shop.find({
-      city: { $regex: new RegExp(`^${city}`, 'i') },
+      city: { $regex: new RegExp(`^${city}$`, 'i') },
     }).populate('items');
     if (!shops) {
       return res

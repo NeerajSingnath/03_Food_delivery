@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import useGetCity from './hooks/useGetCity';
 import useGetCurrentUser from './hooks/useGetCurrentUser';
+import useGetItemByCity from './hooks/useGetItemByCity';
 import useGetMyShop from './hooks/useGetMyShop';
 import useGetShopByCity from './hooks/useGetShopByCity';
 import AddItem from './pages/AddItem';
@@ -18,6 +19,7 @@ function App() {
   useGetCity();
   useGetMyShop();
   useGetShopByCity();
+  useGetItemByCity();
 
   if (loading) {
     return (
