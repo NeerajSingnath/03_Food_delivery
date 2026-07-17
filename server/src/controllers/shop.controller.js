@@ -85,3 +85,27 @@ export const getMyShop = async (req, res) => {
       .json({ success: false, message: 'Failed to get shop details' });
   }
 };
+
+export const getShopByCity = async (req, res) => {
+  try {
+    const { city } = req.body;
+    const shops = await Shop.find({
+      city: { $regex: new RegExp(`^${city}$`, 'i') },
+    })
+      .populate('owner')
+      .populate('items');
+    if (!shops) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'No shops found' });
+    }
+    return res
+      .status(200)
+      .json({ success: true, message: 'Shops found', shops });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Failed to get shops' });
+  }
+};
